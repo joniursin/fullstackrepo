@@ -4,6 +4,12 @@ const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</bu
 
 const Statistics = ({text, amount}) => <div>{text} {amount}</div>
 
+const Total = ({good, neutral, bad}) => <div>all {good + neutral + bad}</div>
+
+const Average = ({good, neutral, bad}) => <div>average {(good - bad) / (good + neutral + bad)}</div>
+
+const PositivePercentage = ({good, neutral, bad}) => <div>positive {((good) / (good + neutral + bad))*100} %</div>
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0)
@@ -20,6 +26,9 @@ const App = () => {
       <Statistics text="good" amount={good} />
       <Statistics text="neutral" amount={neutral} />
       <Statistics text="bad" amount={bad} />
+      <Total good={good} neutral={neutral} bad={bad} />
+      <Average good={good} neutral={neutral} bad={bad} />
+      <PositivePercentage good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
