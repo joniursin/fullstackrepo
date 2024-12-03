@@ -11,16 +11,20 @@ const Average = ({good, neutral, bad}) => <div>average {(good - bad) / (good + n
 const PositivePercentage = ({good, neutral, bad}) => <div>positive {((good) / (good + neutral + bad))*100} %</div>
 
 const Statistics = ({good, neutral, bad}) => {
-  
+  if (good != 0 || neutral != 0 || bad != 0) {
+    return (
+      <div>
+        <FeedbackAmount text={"good"} amount={good} />
+        <FeedbackAmount text={"neutral"} amount={neutral} />
+        <FeedbackAmount text={"bad"} amount={bad} />
+        <Total good={good} neutral={neutral} bad={bad} />
+        <Average good={good} neutral={neutral} bad={bad} />
+        <PositivePercentage good={good} neutral={neutral} bad={bad} />
+      </div>
+      )
+  }
   return (
-  <div>
-    <FeedbackAmount text={"good"} amount={good} />
-    <FeedbackAmount text={"neutral"} amount={neutral} />
-    <FeedbackAmount text={"bad"} amount={bad} />
-    <Total good={good} neutral={neutral} bad={bad} />
-    <Average good={good} neutral={neutral} bad={bad} />
-    <PositivePercentage good={good} neutral={neutral} bad={bad} />
-  </div>
+    <div>No feedback given</div>
   )
 }
 
