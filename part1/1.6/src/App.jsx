@@ -2,13 +2,27 @@ import { useState } from 'react'
 
 const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>
 
-const Statistics = ({text, amount}) => <div>{text} {amount}</div>
+const FeedbackAmount = ({text, amount}) => <div>{text} {amount}</div>
 
 const Total = ({good, neutral, bad}) => <div>all {good + neutral + bad}</div>
 
 const Average = ({good, neutral, bad}) => <div>average {(good - bad) / (good + neutral + bad)}</div>
 
 const PositivePercentage = ({good, neutral, bad}) => <div>positive {((good) / (good + neutral + bad))*100} %</div>
+
+const Statistics = ({good, neutral, bad}) => {
+  
+  return (
+  <div>
+    <FeedbackAmount text={"good"} amount={good} />
+    <FeedbackAmount text={"neutral"} amount={neutral} />
+    <FeedbackAmount text={"bad"} amount={bad} />
+    <Total good={good} neutral={neutral} bad={bad} />
+    <Average good={good} neutral={neutral} bad={bad} />
+    <PositivePercentage good={good} neutral={neutral} bad={bad} />
+  </div>
+  )
+}
 
 const App = () => {
   // tallenna napit omaan tilaansa
@@ -23,12 +37,7 @@ const App = () => {
       <Button handleClick={() => setNeutral(neutral + 1)} text="neutral" />
       <Button handleClick={() => setBad(bad + 1)} text="bad" />
       <h2>statistics</h2>
-      <Statistics text="good" amount={good} />
-      <Statistics text="neutral" amount={neutral} />
-      <Statistics text="bad" amount={bad} />
-      <Total good={good} neutral={neutral} bad={bad} />
-      <Average good={good} neutral={neutral} bad={bad} />
-      <PositivePercentage good={good} neutral={neutral} bad={bad} />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
