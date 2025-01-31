@@ -23,9 +23,10 @@ const Part = (props) => {
   }
   
   const Total = (props) => {
+    const totals = props.parts.map(part => part.exercises)
     return (
       <div>
-        <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>
+        <b>total of exercises {totals.reduce((accumulator, current) => accumulator + current, 0)}</b>
       </div>
     )
   }
@@ -36,6 +37,7 @@ const Course = (props) => {
         <div>
             <Header course={course.name} />
             <Content parts={course.parts} />
+            <Total parts={course.parts} />
         </div>
     )
   }
