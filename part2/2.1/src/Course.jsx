@@ -23,10 +23,10 @@ const Part = (props) => {
   }
   
   const Total = (props) => {
-    const totals = props.parts.map(part => part.exercises)
+    const total = props.parts.map(part => part.exercises).reduce((accumulator, current) => accumulator + current, 0)
     return (
       <div>
-        <b>total of exercises {totals.reduce((accumulator, current) => accumulator + current, 0)}</b>
+        <b>total of exercises {total}</b>
       </div>
     )
   }
