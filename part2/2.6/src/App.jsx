@@ -11,7 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [notification, setNotification] = useState(null)
+  const [notification, setNotification] = useState([null,'notification'])
 
   useEffect(() => {
     personService
@@ -36,9 +36,9 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
-
-      setNotification(`Added ${newName}`)
-      setTimeout(() => {setNotification(null)}, 2000)
+      setNotification([`Added ${newName}`, 'notification'])
+      //setNotification(`Added ${newName}`)
+      setTimeout(() => {setNotification([null, 'notification'])}, 2000)
     }
     else {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
@@ -51,8 +51,12 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id === id ? returnedPerson : person))
       })
-      setNotification(`Updated number for ${newName}`)
-      setTimeout(() => {setNotification(null)}, 2000)
+      .catch(error => {
+        setNotification([`Information of ${newName} has already been removed from server`, 'error'])
+        setPersons(persons.filter(person => person.id !== id))
+      })
+      setNotification([`Updated number for ${newName}`, 'notification'])
+      setTimeout(() => {setNotification([null, 'notification'])}, 2000)
       }
     }
   }
