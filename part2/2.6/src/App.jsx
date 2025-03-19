@@ -25,9 +25,8 @@ const App = () => {
       const personObject = {
         name: newName,
         number: newNumber,
-        id: String(persons.length + 1)
       }
-      
+
       personService
         .create(personObject)
         .then(returnedPerson => {
@@ -47,6 +46,16 @@ const App = () => {
     }
     else {
       return persons
+    }
+  }
+
+  const deletePerson = (deletePerson) => {
+    if (window.confirm(`Delete ${deletePerson.name} ?`)) {
+      personService
+        .personDelete(deletePerson.id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== deletePerson.id))
+        })
     }
   }
 
@@ -78,7 +87,7 @@ const App = () => {
       <h2>Numbers</h2>
 
       {filter().map(person => (
-        <Persons key={person.id} person={person}/>))}
+        <Persons key={person.id} person={person} deletePerson={deletePerson}/>))}
 
     </div>
   )
