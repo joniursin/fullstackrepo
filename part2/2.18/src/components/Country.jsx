@@ -1,4 +1,4 @@
-const Country = ({country, onlyOne}) => {
+const Country = ({country, onlyOne, setNewSearch}) => {
   if (onlyOne) {
     return (
       <div>
@@ -12,7 +12,7 @@ const Country = ({country, onlyOne}) => {
     )
   }
   else {
-    return <div>{country.name.common}</div>
+    return <div>{country.name.common} <button onClick={() => setNewSearch(country.name.common)}>Show</button> </div>
   }
 }
 

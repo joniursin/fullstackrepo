@@ -30,7 +30,7 @@ const App = () => {
   return (
     <div>
       <div>find countries <input onChange={handleSearch}/></div>
-      {search()?.length ? (search().map(country => (<Country key={country.name.common} country={country} onlyOne={search().length == 1} />))) : (<div>Too many matches, specify another filter</div>)}
+      {search()?.length ? (search().map(country => (<Country key={country.name.common} country={country} onlyOne={search().length == 1} setNewSearch={setNewSearch}/>))) : (<div>Too many matches, specify another filter</div>)}
     </div>
   )
 }
