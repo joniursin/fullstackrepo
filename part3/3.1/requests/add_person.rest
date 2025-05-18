@@ -5,3 +5,12 @@ Content-Type: application/json
     "name": "Arto Hellas2", 
     "number": "040-1234567"
 }
+
+###
+POST https://fullstackrepo-9jjj.onrender.com/api/persons
+Content-Type: application/json
+
+{ 
+    "name": "Arto Hellas2", 
+    "number": "040-1234567"
+}
