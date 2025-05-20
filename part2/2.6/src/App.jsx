@@ -36,6 +36,10 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        .catch(error => {
+          setNotification([error.response.data.error, 'notification'])
+          setTimeout(() => {setNotification([null, 'notification'])}, 2000)
+        })
       setNotification([`Added ${newName}`, 'notification'])
       //setNotification(`Added ${newName}`)
       setTimeout(() => {setNotification([null, 'notification'])}, 2000)
