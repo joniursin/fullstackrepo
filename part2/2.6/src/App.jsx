@@ -41,7 +41,6 @@ const App = () => {
           setTimeout(() => {setNotification([null, 'notification'])}, 2000)
         })
       setNotification([`Added ${newName}`, 'notification'])
-      //setNotification(`Added ${newName}`)
       setTimeout(() => {setNotification([null, 'notification'])}, 2000)
     }
     else {
