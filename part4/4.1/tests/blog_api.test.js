@@ -37,6 +37,19 @@ test('successfully creates a new blog post', async () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
 })
 
+test('likes property missing will default to the value 0', async () => {
+    const newBlog = {
+        title: "Test blog 2",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+    const response = await api.get('/api/blogs')
+    const getBlog = response.body.find(blog => blog.title === "Test blog 2")
+    assert.strictEqual(getBlog.likes, 0)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
