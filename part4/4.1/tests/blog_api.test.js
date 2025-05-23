@@ -50,6 +50,14 @@ test('likes property missing will default to the value 0', async () => {
     assert.strictEqual(getBlog.likes, 0)
 })
 
+test('title or url missing responds with the status code 400', async () => {
+    const newBlog = {
+        author: "Michael Chan",
+    }
+    
+    await api.post('/api/blogs').send(newBlog).expect(400)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
