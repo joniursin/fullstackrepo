@@ -21,8 +21,22 @@ test('returns the correct amount of blog posts in the JSON format', async () => 
 
 test('unique identifier property of the blog posts is named id', async () => {
     const response = await api.get('/api/blogs')
-    assert.strictEqual(Object.keys(response.body[0])[4], 'id')
+    assert.strictEqual('id' in response.body[0], true)
 })
+
+test('successfully creates a new blog post', async () => {
+    const newBlog = {
+        title: "Test blog",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 7
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+    const response = await api.get('/api/blogs')
+    assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
