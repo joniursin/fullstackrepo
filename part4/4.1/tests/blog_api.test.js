@@ -58,6 +58,14 @@ test('title or url missing responds with the status code 400', async () => {
     await api.post('/api/blogs').send(newBlog).expect(400)
 })
 
+test('delete blog succeeds', async () => {
+    await api.delete('/api/blogs/5a422a851b54a676234d17f7').expect(204)
+})
+
+test('delete blog with non-existing id returns status code 400', async () => {
+    await api.delete('/api/blogs/idnotindatabase').expect(400)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
