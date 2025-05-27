@@ -66,6 +66,31 @@ test('delete blog with non-existing id returns status code 400', async () => {
     await api.delete('/api/blogs/idnotindatabase').expect(400)
 })
 
+test('update blog succeeds', async () => {
+    const newBlog = {
+        title: "Test blog 3",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 10
+    }
+
+    await api.put('/api/blogs/5a422a851b54a676234d17f7').send(newBlog).expect(200)
+    const response = await api.get('/api/blogs')
+    const getBlog = response.body.find(blog => blog.title === "Test blog 3")
+    assert.strictEqual(getBlog.title, "Test blog 3")
+})
+
+test('update blog with non-existing id returns status code 400', async () => {
+    const newBlog = {
+        title: "Test blog 4",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 10
+    }
+
+    await api.put('/api/blogs/idnotindatabase').send(newBlog).expect(400)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
