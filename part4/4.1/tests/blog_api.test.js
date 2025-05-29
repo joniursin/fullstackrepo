@@ -1,10 +1,12 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
+const bcrypt = require('bcrypt')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -89,6 +91,59 @@ test('update blog with non-existing id returns status code 400', async () => {
     }
 
     await api.put('/api/blogs/idnotindatabase').send(newBlog).expect(400)
+})
+
+describe('test user creation', () => {
+    beforeEach(async () => {
+        await User.deleteMany({})
+
+        const user = new User({ username: 'tester1', passwordHash: await bcrypt.hash('password1', 10), name: 'tester' })
+        await user.save()
+    })
+
+    test('creation succeeds on unique username', async () => {
+        const newUser = {
+            username: "tester2",
+            password: "password2",
+            name: "tester"
+        }
+
+        const usersBefore = await api.get('/api/users')
+        await api.post('/api/users').send(newUser).expect(201).expect('Content-Type', /application\/json/)
+        const usersAfter = await api.get('/api/users')
+        assert.strictEqual(usersAfter.body.length, usersBefore.body.length + 1)
+    })
+
+    test('creation fails on non unique username and returns 400', async () => {
+        const newUser = {
+            username: "tester1",
+            password: "password2",
+            name: "tester"
+        }
+
+        await api.post('/api/users').send(newUser).expect(400).expect('Content-Type', /application\/json/)
+    })
+
+    test('creation fails when username less than 3 char returns 400', async () => {
+        const newUser = {
+            username: "te",
+            password: "password2",
+            name: "tester"
+        }
+
+        await api.post('/api/users').send(newUser).expect(400).expect('Content-Type', /application\/json/)
+    })
+
+    test('creation fails when password less than 3 char returns 400 and error message', async () => {
+        const newUser = {
+            username: "tester2",
+            password: "pa",
+            name: "tester"
+        }
+
+        const response = await api.post('/api/users').send(newUser).expect(400).expect('Content-Type', /application\/json/)
+        assert(response.body.error.includes('password must be at least 3 characters long'))
+    })
 })
 
 after(async () => {
