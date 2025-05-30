@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: Bearer 
 
 {
-    "title": "Test blog 6",
+    "title": "Test blog 7",
     "author": "Michael Chan",
     "url": "https://reactpatterns.com/",
     "likes": 10
