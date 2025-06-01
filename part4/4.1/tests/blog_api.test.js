@@ -12,8 +12,12 @@ const api = supertest(app)
 
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
 
     await Blog.insertMany(helper.initialBlogs)
+
+    const user = new User({ username: 'tester1', passwordHash: await bcrypt.hash('password1', 10), name: 'tester' })
+    await user.save()
 })
 
 test('returns the correct amount of blog posts in the JSON format', async () => {
@@ -34,9 +38,23 @@ test('successfully creates a new blog post', async () => {
         likes: 7
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+    const getToken = await api.post('/api/login').send({ username: "tester1", password: "password1" })
+    const token = getToken.body.token
+
+    await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
     const response = await api.get('/api/blogs')
     assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+})
+
+test('blog creation fails when token is not provided', async () => {
+    const newBlog = {
+        title: "Test blog",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 7
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(401).expect('Content-Type', /application\/json/)
 })
 
 test('likes property missing will default to the value 0', async () => {
@@ -46,7 +64,10 @@ test('likes property missing will default to the value 0', async () => {
         url: "https://reactpatterns.com/",
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+    const getToken = await api.post('/api/login').send({ username: "tester1", password: "password1" })
+    const token = getToken.body.token
+
+    await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
     const response = await api.get('/api/blogs')
     const getBlog = response.body.find(blog => blog.title === "Test blog 2")
     assert.strictEqual(getBlog.likes, 0)
@@ -56,16 +77,35 @@ test('title or url missing responds with the status code 400', async () => {
     const newBlog = {
         author: "Michael Chan",
     }
+
+    const getToken = await api.post('/api/login').send({ username: "tester1", password: "password1" })
+    const token = getToken.body.token
     
-    await api.post('/api/blogs').send(newBlog).expect(400)
+    await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog).expect(400)
 })
 
 test('delete blog succeeds', async () => {
-    await api.delete('/api/blogs/5a422a851b54a676234d17f7').expect(204)
+    const getToken = await api.post('/api/login').send({ username: "tester1", password: "password1" })
+    const token = getToken.body.token
+
+    const newBlog = {
+        title: "Test blog delete",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 7
+    }
+
+    const response = await api.post('/api/blogs').set('Authorization', `Bearer ${token}`).send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+    const blogId = response.body.id
+
+    await api.delete(`/api/blogs/${blogId}`).set('Authorization', `Bearer ${token}`).expect(204)
 })
 
 test('delete blog with non-existing id returns status code 400', async () => {
-    await api.delete('/api/blogs/idnotindatabase').expect(400)
+    const getToken = await api.post('/api/login').send({ username: "tester1", password: "password1" })
+    const token = getToken.body.token
+
+    await api.delete('/api/blogs/idnotindatabase').set('Authorization', `Bearer ${token}`).expect(400)
 })
 
 test('update blog succeeds', async () => {
