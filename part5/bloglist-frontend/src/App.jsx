@@ -10,7 +10,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState([null, 'notification'])
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -52,9 +52,11 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setNotification(['logged in', 'notification'])
+      setTimeout(() => { setNotification([null, 'notification']) }, 5000)
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => { setErrorMessage(null) }, 5000)
+      setNotification(['wrong username or password', 'error'])
+      setTimeout(() => { setNotification([null, 'notification']) }, 5000)
     }
   }
 
@@ -66,23 +68,32 @@ const App = () => {
       url: newUrl
     }
 
-    const response = await blogService.create(blogObject)
-    setBlogs(blogs.concat(response))
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
+    try {
+      const response = await blogService.create(blogObject)
+      setBlogs(blogs.concat(response))
+      setNotification([`a new blog ${newTitle} by ${newAuthor} added`, 'notification'])
+      setTimeout(() => { setNotification([null, 'notification']) }, 5000)
+      setNewTitle('')
+      setNewAuthor('')
+      setNewUrl('')
+    } catch (exception) {
+      setNotification(['blog creation failed', 'error'])
+      setTimeout(() => { setNotification([null, 'notification']) }, 5000)
+    }
   }
 
   const logOut = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+    setNotification(['logged out', 'notification'])
+    setTimeout(() => { setNotification([null, 'notification']) }, 5000)
   }
 
   if (user === null) {
     return (
       <div>
-        <Notification message={errorMessage} />
         <h2>log in to application</h2>
+        <Notification notification={notification} />
         <form onSubmit={loginHandler}>
           <div>
             username
@@ -101,6 +112,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification notification={notification} />
       <div>
         {user.name} logged in
         <BlogForm addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange} />
