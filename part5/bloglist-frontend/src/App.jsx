@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +15,8 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -61,6 +64,7 @@ const App = () => {
   }
 
   const addBlog = async (event) => {
+    blogFormRef.current.toggleVisibility()
     event.preventDefault()
     const blogObject = {
       title: newTitle,
@@ -111,12 +115,17 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification notification={notification} />
       <div>
+      <h2>blogs</h2>
+        <Notification notification={notification} />
         {user.name} logged in
-        <BlogForm addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange} />
         <button onClick={logOut}>logout</button>
+      </div>
+      <div>
+        <Togglable buttonLabel='new blog' ref={blogFormRef}>
+          <h2>create new</h2>
+          <BlogForm addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange} />
+        </Togglable>
       </div>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
