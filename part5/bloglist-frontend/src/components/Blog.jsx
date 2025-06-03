@@ -22,7 +22,7 @@ const Blog = (props) => {
       user: props.blog.user.id
     }
     const response = await blogService.update(props.blog.id, blogObject)
-    setLikes(blogObject.likes)
+    setLikes(blogObject.likes) //name of the user that added the blog doesn't disappear 5.9 done (added for commit :)
   }
 
   return (
@@ -38,7 +38,7 @@ const Blog = (props) => {
           <p>{props.blog.url}</p>
           <p>
             likes {likes}
-            <button onClick={addLike}>like</button>
+            <button onClick={addLike}>like</button> 
           </p>
           <p>{props.blog.user.name}</p>
         </div>
