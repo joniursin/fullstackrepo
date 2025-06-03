@@ -12,9 +12,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState([null, 'notification'])
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
 
   const blogFormRef = useRef()
 
@@ -32,18 +29,6 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-  }
-
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value)
-  }
 
   const loginHandler = async (event) => {
     event.preventDefault()
@@ -63,23 +48,13 @@ const App = () => {
     }
   }
 
-  const addBlog = async (event) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
-
     try {
       const response = await blogService.create(blogObject)
       setBlogs(blogs.concat(response))
-      setNotification([`a new blog ${newTitle} by ${newAuthor} added`, 'notification'])
+      setNotification([`a new blog ${blogObject.title} by ${blogObject.author} added`, 'notification'])
       setTimeout(() => { setNotification([null, 'notification']) }, 5000)
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
     } catch (exception) {
       setNotification(['blog creation failed', 'error'])
       setTimeout(() => { setNotification([null, 'notification']) }, 5000)
@@ -123,8 +98,7 @@ const App = () => {
       </div>
       <div>
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
-          <h2>create new</h2>
-          <BlogForm addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange} />
+          <BlogForm createBlog={addBlog} />
         </Togglable>
       </div>
       {blogs.map(blog =>
