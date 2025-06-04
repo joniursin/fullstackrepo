@@ -4,6 +4,7 @@ import blogService from '../services/blogs'
 const Blog = (props) => {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(props.blog.likes)
+  const [deleted, setDeleted] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
@@ -25,6 +26,18 @@ const Blog = (props) => {
     setLikes(blogObject.likes)
   }
 
+  const deleteBlog = async (event) => {
+    if (window.confirm(`Remove blog ${props.blog.title} by ${props.blog.author}`)) {
+      event.preventDefault()
+      const response = await blogService.remove(props.blog.id, props.user.token)
+      setDeleted(true)
+    }
+  }
+
+  if (deleted) {
+    return
+  }
+
   return (
     <div className="blogStyle">
       <div>
@@ -41,6 +54,7 @@ const Blog = (props) => {
             <button onClick={addLike}>like</button> 
           </p>
           <p>{props.blog.user.name}</p>
+          {props.blog.user.username === props.user.username && <button onClick={deleteBlog}>remove</button>}
         </div>
       </div>
     </div>
