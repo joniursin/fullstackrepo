@@ -51,7 +51,7 @@ const Blog = (props) => {
           <p>{props.blog.url}</p>
           <p>
             likes {likes}
-            <button onClick={addLike}>like</button> 
+            <button onClick={addLike}>like</button>
           </p>
           <p>{props.blog.user.name}</p>
           {props.blog.user.username === props.user.username && <button onClick={deleteBlog}>remove</button>}
