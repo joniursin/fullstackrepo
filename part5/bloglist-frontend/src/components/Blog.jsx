@@ -15,6 +15,11 @@ const Blog = (props) => {
 
   const addLike = async (event) => {
     event.preventDefault()
+    if (props.addLike) {
+      props.addLike()
+      return
+    }
+
     const blogObject = {
       title: props.blog.title,
       author: props.blog.author,

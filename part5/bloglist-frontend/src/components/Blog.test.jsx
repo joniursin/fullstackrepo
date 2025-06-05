@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 import { test } from 'vitest'
 
-describe('<Togglable />', () => {
+describe('<Blog />', () => {
   let container
 
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('<Togglable />', () => {
       }
     }
 
-    container = render(<Blog buttonLabel="view" blog={blog} user={{ username: 'io' }}/>).container
+    container = render(<Blog buttonLabel="view" blog={blog} user={{ username: 'io' }} />).container
   })
 
   test('blog renders only title and author', () => {
@@ -45,5 +45,28 @@ describe('<Togglable />', () => {
     expect(divT).toHaveTextContent('url test')
     expect(divT).toHaveTextContent('likes 10')
   })
+})
 
+test('clicking like button twice calls event handler twice', async () => {
+  const blog = {
+    title: 'title test',
+    author: 'author test',
+    url: 'url test',
+    likes: 10,
+    user: {
+      username: 'i',
+      name: 'i'
+    }
+  }
+
+  const mockHandler = vi.fn()
+
+  render(<Blog buttonLabel="view" blog={blog} user={{ username: 'io' }} addLike={mockHandler} />)
+
+  const user = userEvent.setup()
+
+  const button = screen.getByText('like')
+  await user.click(button)
+  await user.click(button)
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
