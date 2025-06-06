@@ -29,6 +29,9 @@ const Blog = (props) => {
     }
     const response = await blogService.update(props.blog.id, blogObject)
     setLikes(blogObject.likes)
+    blogService.getAll().then(blogs =>
+      props.setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
+    )
   }
 
   const deleteBlog = async (event) => {
