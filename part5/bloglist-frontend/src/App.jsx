@@ -52,7 +52,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     try {
       const response = await blogService.create(blogObject)
-      setBlogs(blogs.concat(response))
+      setBlogs(blogs.concat({ ...response, user: blogObject.user }))
       setNotification([`a new blog ${blogObject.title} by ${blogObject.author} added`, 'notification'])
       setTimeout(() => { setNotification([null, 'notification']) }, 5000)
     } catch (exception) {
@@ -98,7 +98,7 @@ const App = () => {
       </div>
       <div>
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
+          <BlogForm createBlog={addBlog} user={user}/>
         </Togglable>
       </div>
       {blogs.map(blog =>
