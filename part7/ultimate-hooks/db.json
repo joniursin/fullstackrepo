@@ -1,0 +1,86 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom-hooks are awesome!"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "gdfg",
+      "id": 3
+    },
+    {
+      "content": "hfghfg",
+      "id": 4
+    },
+    {
+      "content": "oookkk",
+      "id": 5
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "mluukkai",
+      "number": "040-5483923"
+    },
+    {
+      "id": 2,
+      "name": "hellas",
+      "number": "012-123123"
+    },
+    {
+      "name": "gsdfg",
+      "number": "sdfgsdfg",
+      "id": 3
+    },
+    {
+      "name": "gsdfg",
+      "number": "sdfgsdfg",
+      "id": 4
+    },
+    {
+      "name": "hfdgh",
+      "number": "fdghfdgh",
+      "id": 5
+    },
+    {
+      "name": "jgjh",
+      "number": "ghjghj",
+      "id": 6
+    },
+    {
+      "name": "kook",
+      "number": "kokok",
+      "id": 7
+    },
+    {
+      "name": "kook",
+      "number": "111131231",
+      "id": 8
+    },
+    {
+      "name": "kook",
+      "number": "111131231",
+      "id": 9
+    },
+    {
+      "name": "kook",
+      "number": "111131231",
+      "id": 10
+    },
+    {
+      "name": "kook",
+      "number": "111131231",
+      "id": 11
+    },
+    {
+      "name": "kook",
+      "number": "111131231",
+      "id": 12
+    }
+  ]
+}
