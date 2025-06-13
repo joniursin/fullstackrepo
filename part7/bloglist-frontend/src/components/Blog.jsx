@@ -1,11 +1,12 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
+import { setLike, deleteBlog } from "../reducers/blogReducer";
 
 const Blog = (props) => {
   const blogs = useSelector((state) => state.blogs);
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false);
-  const [deleted, setDeleted] = useState(false);
 
   const hideWhenVisible = { display: visible ? "none" : "" };
   const showWhenVisible = { display: visible ? "" : "none" };
@@ -14,43 +15,13 @@ const Blog = (props) => {
     setVisible(!visible);
   };
 
-  const addLike = async (event) => {
-    event.preventDefault();
-    if (props.addLike) {
-      props.addLike();
-      return;
-    }
-
-    const blogObject = {
-      title: props.blog.title,
-      author: props.blog.author,
-      url: props.blog.url,
-      likes: likes + 1,
-      user: props.blog.user.id,
-    };
-    const response = await blogService.update(props.blog.id, blogObject);
-    setLikes(blogObject.likes);
-    blogService
-      .getAll()
-      .then((blogs) => props.setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
-  };
-
-  const deleteBlog = async (event) => {
+  const removeBlog = (blog) => {
     if (
-      window.confirm(`Remove blog ${props.blog.title} by ${props.blog.author}`)
+      window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     ) {
-      event.preventDefault();
-      const response = await blogService.remove(
-        props.blog.id,
-        props.user.token,
-      );
-      setDeleted(true);
+      dispatch(deleteBlog(blog, props.user.token))
     }
   };
-
-  if (deleted) {
-    return;
-  }
 
   return (
     <div>
@@ -68,11 +39,11 @@ const Blog = (props) => {
               <p>{blog.url}</p>
               <p>
                 likes {blog.likes}
-                <button onClick={addLike}>like</button>
+                <button onClick={() => dispatch(setLike(blog))}>like</button>
               </p>
               <p>{blog.user.name}</p>
-              {blog.user.username === blog.user.username && (
-                <button onClick={deleteBlog}>remove</button>
+              {blog.user.username === props.user.username && (
+                <button onClick={() => removeBlog(blog)}>remove</button>
               )}
             </div>
           </div>

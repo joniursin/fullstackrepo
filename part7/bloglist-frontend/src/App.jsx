@@ -135,7 +135,7 @@ const App = () => {
           <BlogForm createBlog={addBlog} user={user} />
         </Togglable>
       </div>
-      <Blog />
+      <Blog user={user} />
     </div>
   );
 };
