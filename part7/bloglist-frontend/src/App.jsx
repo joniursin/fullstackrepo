@@ -7,6 +7,15 @@ import { setNotification } from "./reducers/notificationReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs, newBlog } from "./reducers/blogReducer";
 import { logoutUser, setUser, setToken } from "./reducers/userReducer.js";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useMatch,
+  useNavigate,
+} from "react-router-dom";
+import Users from "./components/Users.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -110,6 +119,9 @@ const App = () => {
         {user.name} logged in
         <button onClick={logOut}>logout</button>
       </div>
+      <Routes>
+        <Route path="/users" element={<Users />} />
+      </Routes>
       <div>
         <Togglable buttonLabel="new blog" ref={blogFormRef}>
           <BlogForm createBlog={addBlog} user={user} />

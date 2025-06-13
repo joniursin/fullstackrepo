@@ -1,4 +1,4 @@
-import { createSlice, isAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
 
