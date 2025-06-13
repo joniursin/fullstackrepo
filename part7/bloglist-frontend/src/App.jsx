@@ -5,13 +5,15 @@ import loginService from "./services/login";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
+import { setNotification } from "./reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 
 const App = () => {
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState([null, "notification"]);
 
   const blogFormRef = useRef();
 
@@ -40,15 +42,19 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
-      setNotification(["logged in", "notification"]);
-      setTimeout(() => {
-        setNotification([null, "notification"]);
-      }, 5000);
+      dispatch(
+        setNotification(
+          { notification: "logged in", type: "notification" },
+          5000,
+        ),
+      );
     } catch (exception) {
-      setNotification(["wrong username or password", "error"]);
-      setTimeout(() => {
-        setNotification([null, "notification"]);
-      }, 5000);
+      dispatch(
+        setNotification(
+          { notification: "wrong username or password", type: "error" },
+          5000,
+        ),
+      );
     }
   };
 
@@ -57,35 +63,41 @@ const App = () => {
     try {
       const response = await blogService.create(blogObject);
       setBlogs(blogs.concat({ ...response, user: blogObject.user }));
-      setNotification([
-        `a new blog ${blogObject.title} by ${blogObject.author} added`,
-        "notification",
-      ]);
-      setTimeout(() => {
-        setNotification([null, "notification"]);
-      }, 5000);
+      dispatch(
+        setNotification(
+          {
+            notification: `a new blog ${blogObject.title} by ${blogObject.author} added`,
+            type: "notification",
+          },
+          5000,
+        ),
+      );
     } catch (exception) {
-      setNotification(["blog creation failed", "error"]);
-      setTimeout(() => {
-        setNotification([null, "notification"]);
-      }, 5000);
+      dispatch(
+        setNotification(
+          { notification: "blog creation failed", type: "error" },
+          5000,
+        ),
+      );
     }
   };
 
   const logOut = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
-    setNotification(["logged out", "notification"]);
-    setTimeout(() => {
-      setNotification([null, "notification"]);
-    }, 5000);
+    dispatch(
+      setNotification(
+        { notification: "logged out", type: "notification" },
+        5000,
+      ),
+    );
   };
 
   if (user === null) {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification notification={notification} />
+        <Notification />
         <form onSubmit={loginHandler}>
           <div>
             username
@@ -117,7 +129,7 @@ const App = () => {
     <div>
       <div>
         <h2>blogs</h2>
-        <Notification notification={notification} />
+        <Notification />
         {user.name} logged in
         <button onClick={logOut}>logout</button>
       </div>
