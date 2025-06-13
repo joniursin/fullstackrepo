@@ -7,10 +7,10 @@ import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
 import { useDispatch } from "react-redux";
+import { initializeBlogs, newBlog } from "./reducers/blogReducer";
 
 const App = () => {
   const dispatch = useDispatch();
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -18,9 +18,7 @@ const App = () => {
   const blogFormRef = useRef();
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
+    dispatch(initializeBlogs());
   }, []);
 
   useEffect(() => {
@@ -61,8 +59,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
     try {
-      const response = await blogService.create(blogObject);
-      setBlogs(blogs.concat({ ...response, user: blogObject.user }));
+      dispatch(newBlog(blogObject));
       dispatch(
         setNotification(
           {
@@ -138,15 +135,7 @@ const App = () => {
           <BlogForm createBlog={addBlog} user={user} />
         </Togglable>
       </div>
-      {blogs.map((blog) => (
-        <Blog
-          buttonLabel="view"
-          key={blog.id}
-          blog={blog}
-          user={user}
-          setBlogs={setBlogs}
-        />
-      ))}
+      <Blog />
     </div>
   );
 };

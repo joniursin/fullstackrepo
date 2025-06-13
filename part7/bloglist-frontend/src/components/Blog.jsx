@@ -1,9 +1,10 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
+import { useSelector } from "react-redux"
 
 const Blog = (props) => {
+  const blogs = useSelector((state) => state.blogs);
   const [visible, setVisible] = useState(false);
-  const [likes, setLikes] = useState(props.blog.likes);
   const [deleted, setDeleted] = useState(false);
 
   const hideWhenVisible = { display: visible ? "none" : "" };
@@ -52,26 +53,30 @@ const Blog = (props) => {
   }
 
   return (
-    <div className="blogStyle">
-      <div>
-        <div style={hideWhenVisible} className="blog">
-          {props.blog.title} {props.blog.author}
-          <button onClick={toggleVisibility}>{props.buttonLabel} </button>
-        </div>
-        <div style={showWhenVisible} className="togglableContent">
-          {props.blog.title} {props.blog.author}
-          <button onClick={toggleVisibility}>hide</button>
-          <p>{props.blog.url}</p>
-          <p>
-            likes {likes}
-            <button onClick={addLike}>like</button>
-          </p>
-          <p>{props.blog.user.name}</p>
-          {props.blog.user.username === props.user.username && (
-            <button onClick={deleteBlog}>remove</button>
-          )}
-        </div>
-      </div>
+    <div>
+      {[...blogs]
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => 
+          <div className="blogStyle" key={blog.id}>
+            <div style={hideWhenVisible} className="blog">
+              {blog.title} {blog.author}
+              <button onClick={toggleVisibility}>view</button>
+            </div>
+            <div style={showWhenVisible} className="togglableContent">
+              {blog.title} {blog.author}
+              <button onClick={toggleVisibility}>hide</button>
+              <p>{blog.url}</p>
+              <p>
+                likes {blog.likes}
+                <button onClick={addLike}>like</button>
+              </p>
+              <p>{blog.user.name}</p>
+              {blog.user.username === blog.user.username && (
+                <button onClick={deleteBlog}>remove</button>
+              )}
+            </div>
+          </div>
+        )}
     </div>
   );
 };
