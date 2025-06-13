@@ -9,7 +9,7 @@ const blogSlice = createSlice({
       return action.payload;
     },
     addBlog(state, action) {
-      state.push(action.payload);
+      state.push({ ...action.payload, visible: false });
     },
     updateLike(state, action) {
       const id = action.payload.id;
@@ -20,10 +20,22 @@ const blogSlice = createSlice({
     removeBlog(state, action) {
       return state.filter((blog) => blog.id !== action.payload.id);
     },
+    toggleBlogVisibility(state, action) {
+      const findBlog = state.find((b) => b.id === action.payload);
+      if (findBlog) {
+        findBlog.visible = !findBlog.visible;
+      }
+    },
   },
 });
 
-export const { setBlogs, addBlog, updateLike, removeBlog } = blogSlice.actions;
+export const {
+  setBlogs,
+  addBlog,
+  updateLike,
+  removeBlog,
+  toggleBlogVisibility,
+} = blogSlice.actions;
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -53,6 +65,12 @@ export const deleteBlog = (blog, token) => {
   return async (dispatch) => {
     await blogService.remove(blog.id, token);
     dispatch(removeBlog(blog));
+  };
+};
+
+export const toggleVisibility = (id) => {
+  return async (dispatch) => {
+    dispatch(toggleBlogVisibility(id));
   };
 };
 

@@ -1,19 +1,16 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Blog from "./components/Blog";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
 import Notification from "./components/Notification";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs, newBlog } from "./reducers/blogReducer";
+import { logoutUser, setUser, setToken } from "./reducers/userReducer.js";
 
 const App = () => {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
 
   const blogFormRef = useRef();
 
@@ -25,21 +22,17 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      dispatch(setToken(user));
     }
   }, []);
 
   const loginHandler = async (event) => {
     event.preventDefault();
+    const username = event.target.elements.Username.value;
+    const password = event.target.elements.Password.value;
 
     try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
+      await dispatch(setUser({ username, password }));
       dispatch(
         setNotification(
           { notification: "logged in", type: "notification" },
@@ -59,7 +52,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
     try {
-      dispatch(newBlog(blogObject));
+      await dispatch(newBlog(blogObject));
       dispatch(
         setNotification(
           {
@@ -80,8 +73,7 @@ const App = () => {
   };
 
   const logOut = () => {
-    window.localStorage.removeItem("loggedBlogappUser");
-    setUser(null);
+    dispatch(logoutUser());
     dispatch(
       setNotification(
         { notification: "logged out", type: "notification" },
@@ -98,23 +90,11 @@ const App = () => {
         <form onSubmit={loginHandler}>
           <div>
             username
-            <input
-              data-testid="username"
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
+            <input data-testid="username" type="text" name="Username" />
           </div>
           <div>
             password
-            <input
-              data-testid="password"
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
+            <input data-testid="password" type="password" name="Password" />
           </div>
           <button type="submit">login</button>
         </form>
@@ -135,7 +115,7 @@ const App = () => {
           <BlogForm createBlog={addBlog} user={user} />
         </Togglable>
       </div>
-      <Blog user={user} />
+      <Blog />
     </div>
   );
 };
