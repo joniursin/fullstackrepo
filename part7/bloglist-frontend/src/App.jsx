@@ -90,7 +90,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <Menu />
       <Notification />
       <Routes>
