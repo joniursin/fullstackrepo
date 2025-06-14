@@ -1,8 +1,7 @@
-import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { initializeUsers } from "../reducers/usersReducer";
-const baseUrl = "/api/users";
+import { Link } from "react-router-dom";
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -18,7 +17,7 @@ const Users = () => {
       <h4 style={{ paddingLeft: "80px" }}>blogs created</h4>
       {users.map((user) => (
         <div key={user.id}>
-          {user.name} {user.blogs.length}
+          <Link to={`/users/${user.id}`}>{user.name}</Link> {user.blogs.length}
         </div>
       ))}
     </div>

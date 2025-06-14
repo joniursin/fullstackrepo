@@ -16,10 +16,12 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Users from "./components/Users.jsx";
+import User from "./components/User.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  const users = useSelector((state) => state.users);
 
   const blogFormRef = useRef();
 
@@ -91,6 +93,11 @@ const App = () => {
     );
   };
 
+  const match = useMatch("/users/:id");
+  const userMatch = match
+    ? users.find((u) => u.id === match.params.id)
+    : null;
+
   if (user === null) {
     return (
       <div>
@@ -120,6 +127,7 @@ const App = () => {
         <button onClick={logOut}>logout</button>
       </div>
       <Routes>
+        <Route path="/users/:id" element={<User user={userMatch} />} />
         <Route path="/users" element={<Users />} />
       </Routes>
       <div>
