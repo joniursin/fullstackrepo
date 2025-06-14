@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { setLike, deleteBlog, toggleVisibility } from "../reducers/blogReducer";
+import { deleteBlog } from "../reducers/blogReducer";
+import { Link } from "react-router-dom";
 
 const Blog = () => {
   const blogs = useSelector((state) => state.blogs);
@@ -17,30 +18,12 @@ const Blog = () => {
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => {
-          const hideWhenVisible = { display: blog.visible ? "none" : "" };
-          const showWhenVisible = { display: blog.visible ? "" : "none" };
           return (
             <div className="blogStyle" key={blog.id}>
-              <div style={hideWhenVisible} className="blog">
-                {blog.title} {blog.author}
-                <button onClick={() => dispatch(toggleVisibility(blog.id))}>
-                  view
-                </button>
-              </div>
-              <div style={showWhenVisible} className="togglableContent">
-                {blog.title} {blog.author}
-                <button onClick={() => dispatch(toggleVisibility(blog.id))}>
-                  hide
-                </button>
-                <p>{blog.url}</p>
-                <p>
-                  likes {blog.likes}
-                  <button onClick={() => dispatch(setLike(blog))}>like</button>
-                </p>
-                <p>{blog.user.name}</p>
-                {blog.user.username === user.username && (
-                  <button onClick={() => removeBlog(blog)}>remove</button>
-                )}
+              <div className="blog">
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title} {blog.author}
+                </Link>
               </div>
             </div>
           );

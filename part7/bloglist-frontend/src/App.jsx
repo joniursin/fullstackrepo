@@ -17,11 +17,13 @@ import {
 } from "react-router-dom";
 import Users from "./components/Users.jsx";
 import User from "./components/User.jsx";
+import BlogView from "./components/BlogView.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const users = useSelector((state) => state.users);
+  const blogs = useSelector((state) => state.blogs);
 
   const blogFormRef = useRef();
 
@@ -93,9 +95,14 @@ const App = () => {
     );
   };
 
-  const match = useMatch("/users/:id");
-  const userMatch = match
-    ? users.find((u) => u.id === match.params.id)
+  const matchU = useMatch("/users/:id");
+  const userMatch = matchU
+    ? users.find((u) => u.id === matchU.params.id)
+    : null;
+
+  const matchB = useMatch("/blogs/:id");
+  const blogMatch = matchB
+    ? blogs.find((u) => u.id === matchB.params.id)
     : null;
 
   if (user === null) {
@@ -123,12 +130,13 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         <Notification />
-        {user.name} logged in
+        <p>{user.name} logged in</p>
         <button onClick={logOut}>logout</button>
       </div>
       <Routes>
         <Route path="/users/:id" element={<User user={userMatch} />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/blogs/:id" element={<BlogView blog={blogMatch} />} />
       </Routes>
       <div>
         <Togglable buttonLabel="new blog" ref={blogFormRef}>
