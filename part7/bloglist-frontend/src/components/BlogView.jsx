@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLike } from "../reducers/blogReducer";
 import { initializeComments, newComment } from "../reducers/commentReducer";
 import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
 
 const BlogView = ({ blog }) => {
   const [comment, setComment] = useState("");
@@ -31,13 +32,20 @@ const BlogView = ({ blog }) => {
       <Link to={blog.url}>{blog.url}</Link>
       <p>
         {blog.likes} likes{" "}
-        <button onClick={() => dispatch(setLike(blog))}>like</button>
+        <Button variant="warning" onClick={() => dispatch(setLike(blog))}>
+          like
+        </Button>
       </p>
       <p>added by {blog.user.name}</p>
       <h3>comments</h3>
       <form onSubmit={handleComment}>
-        <input onChange={(event) => setComment(event.target.value)} />
-        <button type="submit">add comment</button>
+        <input
+          value={comment}
+          onChange={(event) => setComment(event.target.value)}
+        />
+        <Button variant="success" type="submit">
+          add comment
+        </Button>
       </form>
       {comments.map((comment) => (
         <div key={comment._id}>

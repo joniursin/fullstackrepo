@@ -17,6 +17,7 @@ import Users from "./components/Users.jsx";
 import User from "./components/User.jsx";
 import BlogView from "./components/BlogView.jsx";
 import Menu from "./components/Menu.jsx";
+import { Button, Form } from "react-bootstrap";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -71,20 +72,22 @@ const App = () => {
 
   if (user === null) {
     return (
-      <div>
-        <h2>log in to application</h2>
+      <div className="container">
+        <h2>Log in to blog app</h2>
         <Notification />
-        <form onSubmit={loginHandler}>
-          <div>
-            username
-            <input data-testid="username" type="text" name="Username" />
-          </div>
-          <div>
-            password
-            <input data-testid="password" type="password" name="Password" />
-          </div>
-          <button type="submit">login</button>
-        </form>
+        <Form onSubmit={loginHandler}>
+          <Form.Group>
+            <Form.Label>username</Form.Label>
+            <Form.Control type="text" name="Username" />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>password</Form.Label>
+            <Form.Control type="password" name="Password" />
+          </Form.Group>
+          <Button variant="success" type="submit">
+            login
+          </Button>
+        </Form>
       </div>
     );
   }

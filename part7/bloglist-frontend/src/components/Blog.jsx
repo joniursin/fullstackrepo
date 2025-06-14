@@ -6,6 +6,7 @@ import BlogForm from "./BlogForm";
 import { newBlog } from "../reducers/blogReducer";
 import { setNotification } from "../reducers/notificationReducer";
 import { useRef } from "react";
+import { Table } from "react-bootstrap";
 
 const Blog = () => {
   const blogFormRef = useRef();
@@ -47,20 +48,23 @@ const Blog = () => {
       <Togglable buttonLabel="create new" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} user={user} />
       </Togglable>
-      
-      {[...blogs]
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => {
-          return (
-            <div className="blogStyle" key={blog.id}>
-              <div className="blog">
-                <Link to={`/blogs/${blog.id}`}>
-                  {blog.title} {blog.author}
-                </Link>
-              </div>
-            </div>
-          );
-        })}
+
+      <Table striped bordered>
+        <tbody>
+          {[...blogs]
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => {
+              return (
+                <tr key={blog.id}>
+                  <td>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                  </td>
+                  <td>{blog.author}</td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </Table>
     </div>
   );
 };

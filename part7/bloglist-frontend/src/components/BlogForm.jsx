@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "react-bootstrap";
 
 const BlogForm = ({ createBlog, user }) => {
   const [newTitle, setNewTitle] = useState("");
@@ -51,7 +52,9 @@ const BlogForm = ({ createBlog, user }) => {
             placeholder="url"
           />
         </div>
-        <button type="submit">create</button>
+        <Button variant="success" type="submit">
+          create
+        </Button>
       </form>
     </div>
   );
