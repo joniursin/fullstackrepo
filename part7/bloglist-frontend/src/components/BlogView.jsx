@@ -1,12 +1,24 @@
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLike } from "../reducers/blogReducer";
+import { initializeComments, newComment } from "../reducers/commentReducer";
+import { useEffect } from "react";
 
 const BlogView = ({ blog }) => {
-  const dispatch = useDispatch();
   if (!blog) {
     return null;
   }
+
+  const dispatch = useDispatch();
+  const comments = useSelector((state) => state.comments);
+
+  useEffect(() => {
+    dispatch(initializeComments(blog.id));
+  }, []);
+
+  const handleComment = () => {
+    dispatch(newComment(blog.id, { content: "comment1" }));
+  };
 
   return (
     <div>
@@ -19,6 +31,13 @@ const BlogView = ({ blog }) => {
         <button onClick={() => dispatch(setLike(blog))}>like</button>
       </p>
       <p>added by {blog.user.name}</p>
+      <h3>comments</h3>
+      <button onClick={handleComment}>Post Comment</button>
+      {comments.map((comment) => (
+        <div key={comment._id}>
+          <li>{comment.content}</li>
+        </div>
+      ))}
     </div>
   );
 };
