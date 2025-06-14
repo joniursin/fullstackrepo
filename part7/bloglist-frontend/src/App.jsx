@@ -1,12 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
-import BlogForm from "./components/BlogForm";
-import Togglable from "./components/Togglable";
 import { setNotification } from "./reducers/notificationReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { initializeBlogs, newBlog } from "./reducers/blogReducer";
-import { logoutUser, setUser, setToken } from "./reducers/userReducer.js";
+import { initializeBlogs } from "./reducers/blogReducer";
+import { setUser, setToken } from "./reducers/userReducer.js";
 import {
   BrowserRouter as Router,
   Routes,
@@ -18,14 +16,13 @@ import {
 import Users from "./components/Users.jsx";
 import User from "./components/User.jsx";
 import BlogView from "./components/BlogView.jsx";
+import Menu from "./components/Menu.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const users = useSelector((state) => state.users);
   const blogs = useSelector((state) => state.blogs);
-
-  const blogFormRef = useRef();
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -62,39 +59,6 @@ const App = () => {
     }
   };
 
-  const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility();
-    try {
-      await dispatch(newBlog(blogObject));
-      dispatch(
-        setNotification(
-          {
-            notification: `a new blog ${blogObject.title} by ${blogObject.author} added`,
-            type: "notification",
-          },
-          5000,
-        ),
-      );
-    } catch (exception) {
-      dispatch(
-        setNotification(
-          { notification: "blog creation failed", type: "error" },
-          5000,
-        ),
-      );
-    }
-  };
-
-  const logOut = () => {
-    dispatch(logoutUser());
-    dispatch(
-      setNotification(
-        { notification: "logged out", type: "notification" },
-        5000,
-      ),
-    );
-  };
-
   const matchU = useMatch("/users/:id");
   const userMatch = matchU
     ? users.find((u) => u.id === matchU.params.id)
@@ -127,23 +91,14 @@ const App = () => {
 
   return (
     <div>
-      <div>
-        <h2>blogs</h2>
-        <Notification />
-        <p>{user.name} logged in</p>
-        <button onClick={logOut}>logout</button>
-      </div>
+      <Menu />
+      <Notification />
       <Routes>
+        <Route path="/" element={<Blog />} />
         <Route path="/users/:id" element={<User user={userMatch} />} />
         <Route path="/users" element={<Users />} />
         <Route path="/blogs/:id" element={<BlogView blog={blogMatch} />} />
       </Routes>
-      <div>
-        <Togglable buttonLabel="new blog" ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} user={user} />
-        </Togglable>
-      </div>
-      <Blog />
     </div>
   );
 };
