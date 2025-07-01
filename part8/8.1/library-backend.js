@@ -1,6 +1,5 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { v1: uuid } = require("uuid");
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -59,13 +58,14 @@ const resolvers = {
   Query: {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
-    allBooks: (root, args) => {
-      let bookList = books;
+    allBooks: async (root, args) => {
+      const author = await Author.findOne({ name: args.author });
+      let bookList = await Book.find({}).populate("author");
       if (args.author) {
-        bookList = bookList.filter((book) => book.author === args.author);
+        bookList = await Book.find({ author: author._id }).populate("author");
       }
       if (args.genre) {
-        bookList = bookList.filter((book) => book.genres.includes(args.genre));
+        bookList = await Book.find({ genres: args.genre }).populate("author");
       }
       return bookList;
     },
@@ -86,7 +86,7 @@ const resolvers = {
       const authors = await Author.find({});
       authorNames = authors.map((author) => author.name);
       if (!authorNames.includes(args.author)) {
-        author = new Author({ name: args.author });
+        const author = new Author({ name: args.author });
         await author.save();
       }
       const author = await Author.findOne({ name: args.author });
@@ -94,17 +94,17 @@ const resolvers = {
       await book.save();
       return book;
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((author) => author.name === args.name);
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name });
+      author.born = args.setBornTo;
+
       if (!author) {
         return null;
       }
 
-      const updatedAuthor = { ...author, born: args.setBornTo };
-      authors = authors.map((author) =>
-        author.name === args.name ? updatedAuthor : author
-      );
-      return updatedAuthor;
+      await author.save();
+
+      return author;
     },
   },
 };
