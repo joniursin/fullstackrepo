@@ -1,41 +1,32 @@
 import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Books = (props) => {
-  const [books, setBooks] = useState("");
-  const [allBooks, setAllBooks] = useState("");
   const [genre, setGenre] = useState("all genres");
 
-  const result = useQuery(ALL_BOOKS);
+  const filteredBooks = useQuery(ALL_BOOKS, {
+    variables: genre !== "all genres" ? { genre } : {},
+  });
 
-  useEffect(() => {
-    if (result.data) {
-      setBooks(result.data.allBooks);
-      setAllBooks(result.data.allBooks);
-    }
-  }, [result.data]);
+  const allBooks = useQuery(ALL_BOOKS, {
+    variables: {},
+  });
 
   if (!props.show) {
     return null;
   }
 
-  if (result.loading) {
+  if (filteredBooks.loading || allBooks.loading) {
     return <div>loading...</div>;
   }
 
-  const genres = [...new Set(allBooks.map((book) => book.genres).flat())];
-  genres.push("all genres");
+  const books = filteredBooks.data.allBooks;
 
-  const byGenre = (genre) => {
-    if (genre === "all genres") {
-      setBooks(allBooks);
-      setGenre(genre);
-    } else {
-      setBooks(allBooks.filter((book) => book.genres.includes(genre)));
-      setGenre(genre);
-    }
-  };
+  const genres = [
+    ...new Set(allBooks.data.allBooks.map((book) => book.genres).flat()),
+    "all genres",
+  ];
 
   return (
     <div>
@@ -62,7 +53,7 @@ const Books = (props) => {
       </table>
       <div>
         {genres.map((genre) => (
-          <button key={genre} onClick={() => byGenre(genre)}>
+          <button key={genre} onClick={() => setGenre(genre)}>
             {genre}
           </button>
         ))}
