@@ -7,6 +7,7 @@ const Books = (props) => {
 
   const filteredBooks = useQuery(ALL_BOOKS, {
     variables: genre !== "all genres" ? { genre } : {},
+    refetchQueries: { query: ALL_BOOKS },
   });
 
   const allBooks = useQuery(ALL_BOOKS, {
