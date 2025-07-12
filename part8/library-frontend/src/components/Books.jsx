@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries";
+import { useQuery, useSubscription } from "@apollo/client";
+import { ALL_BOOKS, BOOK_ADDED } from "../queries";
 import { useState } from "react";
 
 const Books = (props) => {
@@ -12,6 +12,17 @@ const Books = (props) => {
 
   const allBooks = useQuery(ALL_BOOKS, {
     variables: {},
+  });
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const bookAdded = data.data.bookAdded;
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(bookAdded),
+        };
+      });
+    },
   });
 
   if (!props.show) {
