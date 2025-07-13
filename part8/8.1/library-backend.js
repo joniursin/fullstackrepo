@@ -32,6 +32,8 @@ mongoose
     console.log("MongoDB connection error:", error.message);
   });
 
+mongoose.set("debug", true);
+
 const typeDefs = `
   type Book {
     title: String!
@@ -109,13 +111,12 @@ const resolvers = {
     allAuthors: async () => {
       const authors = await Author.find({});
       const books = await Book.find({}).populate("author");
-      const authorsList = authors.map((author) => ({
+      return authors.map((author) => ({
         ...author.toObject(),
         bookCount: books.filter(
           (book) => book.author.name === author.toObject().name
         ).length,
       }));
-      return authorsList;
     },
     me: (root, args, context) => context.currentUser,
   },
