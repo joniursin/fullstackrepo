@@ -29,7 +29,7 @@ const parseArgumentsExerciseCalculator = (args: string[]) => {
   }
 };
 
-const calculateExercises = (target: number, array: number[]): Result => {
+export const calculateExercises = (target: number, array: number[]): Result => {
   const periodLength = array.length;
   const trainingDays = array.filter((n) => n != 0).length;
   const average = array.reduce((i, o) => i + o, 0) / array.length;
@@ -53,13 +53,15 @@ const calculateExercises = (target: number, array: number[]): Result => {
   };
 };
 
-try {
-  const { target, array } = parseArgumentsExerciseCalculator(process.argv);
-  console.log(calculateExercises(target, array));
-} catch (error: unknown) {
-  let errorMessage = "Something bad happened.";
-  if (error instanceof Error) {
-    errorMessage += " Error: " + error.message;
+if (require.main === module) {
+  try {
+    const { target, array } = parseArgumentsExerciseCalculator(process.argv);
+    console.log(calculateExercises(target, array));
+  } catch (error: unknown) {
+    let errorMessage = "Something bad happened.";
+    if (error instanceof Error) {
+      errorMessage += " Error: " + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
-}
+};
