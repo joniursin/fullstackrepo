@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { Diary } from "./types";
+import type { Diary, Visibility, Weather } from "./types";
 import { createDiary, getAllDiaries } from "./services/diaries";
 import axios from "axios";
 
@@ -22,8 +22,8 @@ const App = () => {
       event.preventDefault();
       const data = await createDiary({
         date: newDiaryDate,
-        visibility: newDiaryVisibility,
-        weather: newDiaryWeather,
+        visibility: newDiaryVisibility as Visibility,
+        weather: newDiaryWeather as Weather,
         comment: newDiaryComment,
       });
       setDiaries(diaries.concat(data));
@@ -50,21 +50,70 @@ const App = () => {
         <br></br>
         <label>date</label>
         <input
+          type="date"
           value={newDiaryDate}
           onChange={(event) => setNewDiaryDate(event.target.value)}
         />
         <br></br>
-        <label>visibility</label>
-        <input
-          value={newDiaryVisibility}
-          onChange={(event) => setNewDiaryVisibility(event.target.value)}
-        />
+        <div>
+          visibility great{" "}
+          <input
+            type="radio"
+            name="filterVisibility"
+            onChange={() => setNewDiaryVisibility("great")}
+          />
+          good{" "}
+          <input
+            type="radio"
+            name="filterVisibility"
+            onChange={() => setNewDiaryVisibility("good")}
+          />
+          ok{" "}
+          <input
+            type="radio"
+            name="filterVisibility"
+            onChange={() => setNewDiaryVisibility("ok")}
+          />
+          poor{" "}
+          <input
+            type="radio"
+            name="filterVisibility"
+            onChange={() => setNewDiaryVisibility("poor")}
+          />
+        </div>
         <br></br>
-        <label>weather</label>
-        <input
-          value={newDiaryWeather}
-          onChange={(event) => setNewDiaryWeather(event.target.value)}
-        />
+        <div>
+          weather sunny{" "}
+          <input
+            type="radio"
+            name="filterWeather"
+            onChange={() => setNewDiaryWeather("sunny")}
+          />
+          rainy{" "}
+          <input
+            type="radio"
+            name="filterWeather"
+            onChange={() => setNewDiaryWeather("rainy")}
+          />
+          cloudy{" "}
+          <input
+            type="radio"
+            name="filterWeather"
+            onChange={() => setNewDiaryWeather("cloudy")}
+          />
+          stormy{" "}
+          <input
+            type="radio"
+            name="filterWeather"
+            onChange={() => setNewDiaryWeather("stormy")}
+          />
+          windy{" "}
+          <input
+            type="radio"
+            name="filterWeather"
+            onChange={() => setNewDiaryWeather("windy")}
+          />
+        </div>
         <br></br>
         <label>comment</label>
         <input
