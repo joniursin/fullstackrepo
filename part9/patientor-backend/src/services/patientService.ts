@@ -17,7 +17,7 @@ const getNonSensitiveData = (): NonSensitivePatient[] => {
 };
 
 const addPatient = (patient: NewPatient): Patient => {
-  const newPatient = {
+  const newPatient: Patient = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     id: uuid(),
     ...patient,
@@ -27,8 +27,13 @@ const addPatient = (patient: NewPatient): Patient => {
   return newPatient;
 };
 
+const getPatient = (patientId: string): Patient | undefined => {
+  return patientData.find((p) => p.id === patientId);
+};
+
 export default {
   getData,
   getNonSensitiveData,
   addPatient,
+  getPatient,
 };
