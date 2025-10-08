@@ -1,19 +1,30 @@
 import { useParams } from "react-router-dom";
 import { Patient } from "../../types";
 import patientService from "../../services/patients";
+import diagnosesService from "../../services/diagnoses";
 import { useEffect, useState } from "react";
 
 const PatientPage = () => {
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [diagnoses, setDiagnoses] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const fetchPatient = async () => {
       const patient = await patientService.getPatient(id!);
       setPatient(patient);
     };
+    const fetchDiagnoses = async () => {
+      const diagnoses = await diagnosesService.getAll();
+      const diagnosesDict: Record<string, string> = {};
+      diagnoses.forEach((d) => {
+        diagnosesDict[d.code] = d.name;
+      });
+      setDiagnoses(diagnosesDict);
+    };
 
     fetchPatient();
+    fetchDiagnoses();
   }, [id]);
 
   if (!patient) return <div>Patient not found</div>;
@@ -30,7 +41,9 @@ const PatientPage = () => {
           <div>
             {e.date} {e.description}
             {e.diagnosisCodes?.map((c) => (
-              <li key={c}>{c}</li>
+              <li key={c}>
+                {c} {diagnoses[c]}
+              </li>
             ))}
           </div>
         ))}
