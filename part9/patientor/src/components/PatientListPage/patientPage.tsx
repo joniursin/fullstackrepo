@@ -24,6 +24,17 @@ const PatientPage = () => {
       <p>gender: {patient.gender}</p>
       <p>ssn: {patient.ssn}</p>
       <p>occupation: {patient.occupation}</p>
+      <h3>entries</h3>
+      <p>
+        {patient.entries.map((e) => (
+          <div>
+            {e.date} {e.description}
+            {e.diagnosisCodes?.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </div>
+        ))}
+      </p>
     </div>
   );
 };
